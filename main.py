@@ -2,9 +2,10 @@ import telebot
 from telebot import types
 
 # bot init:
-TOKEN = 'your token'
+TOKEN = '543615902:AAHnZxMtr09uTVZz8LVEU7isN4AMGQ-Uw4I'
 
 bot = telebot.TeleBot(TOKEN)
+
 
 # command /help
 @bot.message_handler(commands=['help'])
@@ -12,26 +13,21 @@ def hlp(message):
     bot.send_message(message.chat.id, 'Привет, это помощь!')
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=["start"])
 def start(message):
-    # additional keyboard testing
-    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-    button_phone = types.KeyboardButton(text="Отправить номер телефона", request_contact=True)
-    button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
-    button_time = types.KeyboardButton(text="Задать время для сна", callback_data="set_time")
-    keyboard.add(button_phone, button_geo)
-    bot.send_message(message.chat.id, "=)", reply_markup=keyboard)
-
-    sent = bot.send_message(message.chat.id, 'Как тебя зовут?')
-    bot.register_next_step_handler(sent, hello)
+    key = types.InlineKeyboardMarkup()
+    but_1 = types.InlineKeyboardButton(text="Настройки твоего сна", callback_data="sleep_settings")
+    but_2 = types.InlineKeyboardButton(text="Как это работает?", callback_data="how_is_it_work")
+    key.add(but_1, but_2)
+    bot.send_message(message.chat.id, "Привет, я умный бот для сна. Выбери действие:", reply_markup=key)
 
 
-def hello(message):
-    bot.send_message(message.chat.id, 'Всем привет. И даже тебе, {name}!'.format(name=message.text))
-    keyboard = types.InlineKeyboardMarkup()
-    url_button = types.InlineKeyboardButton(text="Перейти на Яндекс", url="https://ya.ru")
-    keyboard.add(url_button)
-    bot.send_message(message.chat.id, "Привет! Нажми на кнопку и перейди в поисковик.", reply_markup=keyboard)
+@bot.callback_query_handler(func=lambda call: True)
+def inline_catcher(call):
+    if call.data == 'sleep_settings':
+        sent = bot.send_message(call.message.chat.id, 'Во сколько ты хочешь вставать?')
+    if call.data == 'how_is_it_work':
+        hlp(call.message)
 
 
-bot.polling()
+bot.polling(none_stop=True)
