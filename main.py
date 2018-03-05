@@ -25,9 +25,17 @@ def start(message):
 @bot.callback_query_handler(func=lambda call: True)
 def inline_catcher(call):
     if call.data == 'sleep_settings':
-        sent = bot.send_message(call.message.chat.id, 'Во сколько ты хочешь вставать?')
+        sleep_settings(call.message)
     if call.data == 'how_is_it_work':
         hlp(call.message)
+
+
+def sleep_settings(message):
+    sent = bot.send_message(message.chat.id, 'Во сколько ты хочешь вставать?')
+
+    hours = bot.send_message(message.chat.id, 'Сколько часов в день ты готов спать?')
+    bot.send_message(message.chat.id,
+                     'хорошо, ты будешь вставать в ' + sent.text + ' и спать по ' + hours.text + ' часов')
 
 
 bot.polling(none_stop=True)
