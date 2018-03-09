@@ -66,7 +66,7 @@ def user_entering_hours(message):
         bot.send_message(message.chat.id, "Это неправильное время")
         return
     else:
-        # Возраст введён корректно, можно идти дальше
+        # Время введёно корректно, можно идти дальше
         bot.send_message(message.chat.id, "Теперь я буду говорить тебе, когда ложиться спать")
         key = types.InlineKeyboardMarkup()
         but_1 = types.InlineKeyboardButton(text="Настройки твоего сна", callback_data="sleep_settings")
