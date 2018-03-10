@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 import config
 import dbworker
-
+import messages
 
 # bot init:
 bot = telebot.TeleBot(config.token)
@@ -11,22 +11,23 @@ bot = telebot.TeleBot(config.token)
 # Начало диалога
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
+    hlp(message)
     state = dbworker.get_current_state(message.chat.id)
     if state == config.States.S_ENTER_NAME.value:
-        bot.send_message(message.chat.id, "Забыл ввести имя")
+        bot.send_message(message.chat.id, messages.forgotten_name)
     elif state == config.States.S_ENTER_TIME.value:
-        bot.send_message(message.chat.id, "Забыл ввести время пробуждения")
+        bot.send_message(message.chat.id, messages.forgotten_time)
     elif state == config.States.S_SEND_HOURS.value:
-        bot.send_message(message.chat.id, "Забыл ввести продолжительность сна")
+        bot.send_message(message.chat.id, messages.forgotten_hours)
     else:  # Под "остальным" понимаем состояние "0" - начало диалога
-        bot.send_message(message.chat.id, "Привет! Как я могу к тебе обращаться?")
+        bot.send_message(message.chat.id, messages.hello_new)
         dbworker.set_state(message.chat.id, config.States.S_ENTER_NAME.value)
 
 
 # По команде /reset будем сбрасывать состояния, возвращаясь к началу диалога
 @bot.message_handler(commands=["reset"])
 def cmd_reset(message):
-    bot.send_message(message.chat.id, "Что ж, начнём по-новой. Как тебя зовут?")
+    bot.send_message(message.chat.id, messages.reset_mes)
     dbworker.set_state(message.chat.id, config.States.S_ENTER_NAME.value)
 
 
@@ -87,7 +88,7 @@ def inline_catcher(call):
 # command /help
 @bot.message_handler(commands=['help'])
 def hlp(message):
-    bot.send_message(message.chat.id, 'Привет, это помощь!')
+    bot.send_message(message.chat.id, messages.help_mes)
 
 
 bot.polling(none_stop=True)
