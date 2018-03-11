@@ -34,7 +34,7 @@ def cmd_reset(message):
 @bot.message_handler(func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_NAME.value)
 def user_entering_name(message):
     # В случае с именем не будем ничего проверять, пусть хоть "25671", хоть Евкакий
-    bot.send_message(message.chat.id, "Отличное имя, запомню! Теперь укажи, во сколько ты встаешь!")
+    bot.send_message(message.chat.id, messages.ok_name)
     dbworker.set_state(message.chat.id, config.States.S_ENTER_TIME.value)
 
 
@@ -43,15 +43,16 @@ def user_entering_time(message):
     # А вот тут сделаем проверку
     if not message.text.isdigit():
         # Состояние не меняем, поэтому только выводим сообщение об ошибке и ждём дальше
-        bot.send_message(message.chat.id, "Что-то не так, попробуй ещё раз!")
+        bot.send_message(message.chat.id, messages.num_error)
         return
     # На данном этапе мы уверены, что message.text можно преобразовать в число, поэтому ничем не рискуем
     if int(message.text) < 0 or int(message.text) > 24:
-        bot.send_message(message.chat.id, "Это неправильное время")
+        bot.send_message(message.chat.id, messages.num_wrong)
         return
     else:
         # Время введено корректно, можно идти дальше
-        bot.send_message(message.chat.id, "Принято")
+        bot.send_message(message.chat.id, messages.ok_time)
+        bot.send_message(message.chat.id, messages.to_hours)
         dbworker.set_state(message.chat.id, config.States.S_ENTER_HOURS.value)
 
 
@@ -60,27 +61,27 @@ def user_entering_hours(message):
     # А вот тут сделаем проверку
     if not message.text.isdigit():
         # Состояние не меняем, поэтому только выводим сообщение об ошибке и ждём дальше
-        bot.send_message(message.chat.id, "Что-то не так, попробуй ещё раз!")
+        bot.send_message(message.chat.id, messages.num_error)
         return
     # На данном этапе мы уверены, что message.text можно преобразовать в число, поэтому ничем не рискуем
     if int(message.text) < 3 or int(message.text) > 12:
-        bot.send_message(message.chat.id, "Это неправильное время")
+        bot.send_message(message.chat.id, messages.num_wrong)
         return
     else:
         # Время введёно корректно, можно идти дальше
-        bot.send_message(message.chat.id, "Теперь я буду говорить тебе, когда ложиться спать")
+        bot.send_message(message.chat.id, messages.ok_hours)
         key = types.InlineKeyboardMarkup()
-        but_1 = types.InlineKeyboardButton(text="Настройки твоего сна", callback_data="sleep_settings")
-        but_2 = types.InlineKeyboardButton(text="Как это работает?", callback_data="how_is_it_work")
+        but_1 = types.InlineKeyboardButton(text=messages.sleep_set_but, callback_data="sleep_settings")
+        but_2 = types.InlineKeyboardButton(text=messages.how_but, callback_data="how_is_it_work")
         key.add(but_1, but_2)
-        bot.send_message(message.chat.id, "Если захочешь что-то изменить, нажимай на кнопки", reply_markup=key)
+        bot.send_message(message.chat.id, messages.change_mes, reply_markup=key)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def inline_catcher(call):
     if call.data == 'sleep_settings':
         dbworker.set_state(call.message.chat.id, config.States.S_ENTER_TIME.value)
-        bot.send_message(call.message, 'Введите новое время пробуждения: ')
+        bot.send_message(call.message, messages.new_sets)
     if call.data == 'how_is_it_work':
         hlp(call.message)
 
