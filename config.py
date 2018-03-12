@@ -3,6 +3,7 @@ from enum import Enum
 token = ''
 db_file = "database.vdb"
 
+database_name = 'users.db'  # Файл с базой данных
 
 class States(Enum):
     """
