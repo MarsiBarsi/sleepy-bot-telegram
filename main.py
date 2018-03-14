@@ -11,6 +11,12 @@ bot = telebot.TeleBot(config.token)
 # Начало диалога
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
+    bot.send_message(message.chat.id, 'Set the language:')
+    key = types.InlineKeyboardMarkup()
+    but_1 = types.InlineKeyboardButton(text=':ru:ru', callback_data="ru_lang") # допилить
+    but_2 = types.InlineKeyboardButton(text=':en:en', callback_data="en_lang")
+    key.add(but_1, but_2)
+
     hlp(message)
     state = dbworker.get_current_state(message.chat.id)
     if state == config.States.S_ENTER_NAME.value:
