@@ -40,4 +40,29 @@ sleepy bot будет подсчитывать, во сколько вам ну�
     # inline catcher:
     new_sets = 'Введите новое время пробуждения: '
 else:
-    pass
+    help_mes = '''Our sleep is a complex physiological process...'''
+    forgotten_name = 'you forgot to enter your name'
+    forgotten_time = 'you forgot to enter the awakening time'
+    forgotten_hours = 'you forgot to enter the duration of sleep'
+
+    hello_new = 'Hello what is your name?'
+
+    reset_mes = 'well, let\'s start again. What\'s your name?'
+
+    ok_name = 'Great name! Now tell me when you get up!'
+
+    num_error = 'Something went wrong, try again!'
+    num_wrong = 'incorrect time format'
+    ok_time = 'accepted'
+
+    to_hours = 'enter how many hours you want to sleep'
+
+    ok_hours = 'Now I will tell you when you should go to bed'
+
+    # кнопки:
+    sleep_set_but = 'sleep setting'
+    how_but = 'How is it work?'
+    change_mes = 'If you want to change something, click on the buttons'
+
+    # inline catcher:
+    new_sets = 'Enter the new wake-up time: '
