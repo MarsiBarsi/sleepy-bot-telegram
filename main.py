@@ -11,12 +11,13 @@ bot = telebot.TeleBot(config.token)
 # Начало диалога
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
-
     bot.send_message(message.chat.id, 'Set the language:')
     key = types.InlineKeyboardMarkup()
-    but_1 = types.InlineKeyboardButton(text=':ru:ru', callback_data="ru_lang") # допилить
+    but_1 = types.InlineKeyboardButton(text=':ru:ru', callback_data="ru_lang")  # допилить
     but_2 = types.InlineKeyboardButton(text=':en:en', callback_data="en_lang")
     key.add(but_1, but_2)
+
+    messages.lang_def(message.chat.id)
 
     hlp(message)
     state = dbworker.get_current_state(message.chat.id)
@@ -38,14 +39,16 @@ def cmd_reset(message):
     dbworker.set_state(message.chat.id, config.States.S_ENTER_NAME.value)
 
 
-@bot.message_handler(func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_NAME.value)
+@bot.message_handler(
+    func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_NAME.value)
 def user_entering_name(message):
     # В случае с именем не будем ничего проверять, пусть хоть "25671", хоть Евкакий
     bot.send_message(message.chat.id, messages.ok_name)
     dbworker.set_state(message.chat.id, config.States.S_ENTER_TIME.value)
 
 
-@bot.message_handler(func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_TIME.value)
+@bot.message_handler(
+    func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_TIME.value)
 def user_entering_time(message):
     # А вот тут сделаем проверку
     if not message.text.isdigit():
@@ -63,7 +66,8 @@ def user_entering_time(message):
         dbworker.set_state(message.chat.id, config.States.S_ENTER_HOURS.value)
 
 
-@bot.message_handler(func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_HOURS.value)
+@bot.message_handler(
+    func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_HOURS.value)
 def user_entering_hours(message):
     # А вот тут сделаем проверку
     if not message.text.isdigit():

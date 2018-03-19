@@ -1,7 +1,17 @@
 # локализация
 import dbworker
 
-lang_status = 1
+lang_status = 0
+
+
+def lang_def(user):
+    if dbworker.get_language(user):
+        global lang_status
+        lang_status = 1
+    else:
+        global lang_status
+        lang_status = 0
+
 
 if lang_status == 1:
     help_mes = '''Наш сон - это сложный физиологический процесс, представляющий собой последовательность фаз: бодрствование, быстрый сон (REM), фаза 1, фаза 2, фаза 3 (ранее выделяли фазу 4, однако позже было решено обьединить ее с фазой 3).
